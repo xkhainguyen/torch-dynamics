@@ -1,4 +1,0 @@
-/home/khai/codegen-pinocchio/build/CMakeFiles/rebuild_cache.dir
-/home/khai/codegen-pinocchio/build/CMakeFiles/edit_cache.dir
-/home/khai/codegen-pinocchio/build/CMakeFiles/dynamics.dir
-/home/khai/codegen-pinocchio/build/CMakeFiles/gen_symb.dir
