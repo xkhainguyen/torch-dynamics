@@ -1,19 +1,44 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
+  "C"
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_C
+  "/home/khai/codegen-pinocchio/forward_dynamics.c" "/home/khai/codegen-pinocchio/build/CMakeFiles/dynamics.dir/forward_dynamics.c.o"
+  )
+set(CMAKE_C_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_C
+  "dynamics_EXPORTS"
   )
 
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/arun/random_research/CodegenPinocchio/forward_dynamics.c" "CMakeFiles/dynamics.dir/forward_dynamics.c.o" "gcc" "CMakeFiles/dynamics.dir/forward_dynamics.c.o.d"
-  "/home/arun/random_research/CodegenPinocchio/example.cpp" "CMakeFiles/dynamics.dir/example.cpp.o" "gcc" "CMakeFiles/dynamics.dir/example.cpp.o.d"
+# The include file search paths:
+set(CMAKE_C_TARGET_INCLUDE_PATH
+  "../include"
+  "/usr/include/eigen3"
+  "/opt/openrobots/lib/pkgconfig/../../include"
+  )
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/khai/codegen-pinocchio/example.cpp" "/home/khai/codegen-pinocchio/build/CMakeFiles/dynamics.dir/example.cpp.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "dynamics_EXPORTS"
   )
 
-# Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../include"
+  "/usr/include/eigen3"
+  "/opt/openrobots/lib/pkgconfig/../../include"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

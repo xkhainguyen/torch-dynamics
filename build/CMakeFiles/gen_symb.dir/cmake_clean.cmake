@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/gen_symb.dir/gen_symbolic.cpp.o"
-  "CMakeFiles/gen_symb.dir/gen_symbolic.cpp.o.d"
   "gen_symb"
   "gen_symb.pdb"
 )

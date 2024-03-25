@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-std=c++14")
 
+project(gen_symb)
 # Find Eigen3
 find_package(Eigen3)
 
@@ -14,8 +15,6 @@ pkg_check_modules(pinocchio REQUIRED pinocchio)
 pkg_check_modules(casadi REQUIRED casadi)
 
 ### ----- Create symbolic generation exe ----- ###
-project(gen_symb)
-
 include_directories(
         include
         ${EIGEN3_INCLUDE_DIRS}

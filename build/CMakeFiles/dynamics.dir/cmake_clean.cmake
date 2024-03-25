@@ -1,8 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/dynamics.dir/example.cpp.o"
-  "CMakeFiles/dynamics.dir/example.cpp.o.d"
   "CMakeFiles/dynamics.dir/forward_dynamics.c.o"
-  "CMakeFiles/dynamics.dir/forward_dynamics.c.o.d"
   "libdynamics.pdb"
   "libdynamics.so"
 )
