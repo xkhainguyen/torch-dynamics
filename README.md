@@ -1,3 +1,9 @@
+# torch-dynamics
+
+Generate batchable and jitable fast analytic rigid body dynamics and Jacobians/gradients/derivatives from URDF.
+
+Workflow: URDF -> Pinnochio + Casadi -> C code -> multi-threaded CPU/CUDA -> PyTorch 
+
 
 ### Install Pinocchio
 Install dependencies
