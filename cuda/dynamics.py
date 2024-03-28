@@ -43,7 +43,7 @@ class Cartpole2LFunction(Function):
         
 parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--batch-size', type=int, default=1000)
-parser.add_argument('-r', '--runs', type=int, default=100)
+parser.add_argument('-r', '--runs', type=int, default=1000)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true', default=False)
 parser.add_argument('-d', '--double', action='store_true', default=True)
@@ -67,12 +67,14 @@ tau_in = torch.randn(options.batch_size, ntau, **kwargs)
 
 func = Cartpole2LFunction
 
+# warm start the device
 for i in range(10):
     qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
     qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
 
+# benchmark computations
 start_time = time.time()
-for i in range(1000):
+for i in range(options.runs):
     qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
     qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
 end_time = time.time()
