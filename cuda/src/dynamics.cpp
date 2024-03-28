@@ -10,7 +10,8 @@
 
 */
 
-torch::Tensor dynamics(torch::Tensor q_in, torch::Tensor qdot_in, torch::Tensor tau_in) {
+// Device-agnostic torch wrapper
+torch::Tensor dynamics(const torch::Tensor q_in, const torch::Tensor qdot_in, const torch::Tensor tau_in) {
     CHECK_CONTIGUOUS(q_in);
     CHECK_CONTIGUOUS(qdot_in);
     CHECK_CONTIGUOUS(tau_in);
@@ -18,32 +19,30 @@ torch::Tensor dynamics(torch::Tensor q_in, torch::Tensor qdot_in, torch::Tensor 
     if (q_in.device().type() == torch::DeviceType::CPU) {
         return dynamics_cpu(q_in, qdot_in, tau_in);
 
-    } else if (q_in.device().type() == torch::DeviceType::CUDA) {
-        return dynamics_gpu(q_in, qdot_in, tau_in);
+    // } else if (q_in.device().type() == torch::DeviceType::CUDA) {
+    //     return dynamics_gpu(q_in, qdot_in, tau_in);
     }
 
     return q_in;
 }
 
-// // Define a function that calls the C++ function with PyTorch tensors
-// torch::Tensor forward_dynamics(torch::Tensor q_in, torch::Tensor qdot_in, torch::Tensor tau_in) {
-//     // Check tensor shapes and types if needed
+std::vector<torch::Tensor> derivatives(const torch::Tensor q_in, const torch::Tensor qdot_in, const torch::Tensor tau_in) {
+    CHECK_CONTIGUOUS(q_in);
+    CHECK_CONTIGUOUS(qdot_in);
+    CHECK_CONTIGUOUS(tau_in);
 
-//     // Extract data pointers
-//     double* q_in_ptr = q_in.data_ptr<double>();
-//     double* qdot_in_ptr = qdot_in.data_ptr<double>();
-//     double* tau_in_ptr = tau_in.data_ptr<double>();
+    if (q_in.device().type() == torch::DeviceType::CPU) {
+        return derivatives_cpu(q_in, qdot_in, tau_in);
 
-//     // Allocate output tensor
-//     torch::Tensor qddot_out = torch::empty_like(q_in);
+    // } else if (q_in.device().type() == torch::DeviceType::CUDA) {
+    //     return dynamics_gpu(q_in, qdot_in, tau_in);
+    }
 
-//     // Call the C++ function
-//     _forward_dynamics(q_in_ptr, qdot_in_ptr, tau_in_ptr, qddot_out.data_ptr<double>());
-
-//     return qddot_out;
-// }
+    return {};
+}
 
 // Define the Python module and bindings using Pybind11
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("dynamics", &dynamics, "Forward dynamics function");
+    m.def("derivatives", &derivatives, "Forward derivatives function");
 }

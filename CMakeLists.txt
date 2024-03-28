@@ -45,7 +45,8 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME} SHARED example.cpp
-        forward_dynamics.c)
+        forward_dynamics.c
+        forward_derivatives.c)
 
 target_include_directories(${PROJECT_NAME} PUBLIC)
 

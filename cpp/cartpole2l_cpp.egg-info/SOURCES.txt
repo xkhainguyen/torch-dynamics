@@ -1,7 +1,0 @@
-forward_dynamics.c
-forward_dynamics_wrapper.cpp
-setup.py
-cartpole2l_cpp.egg-info/PKG-INFO
-cartpole2l_cpp.egg-info/SOURCES.txt
-cartpole2l_cpp.egg-info/dependency_links.txt
-cartpole2l_cpp.egg-info/top_level.txt
