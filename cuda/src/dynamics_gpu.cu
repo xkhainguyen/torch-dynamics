@@ -5,3 +5,5 @@
 
 #define NUM_THREADS 256
 #define NUM_BLOCKS(batch_size) ((batch_size + NUM_THREADS - 1) / NUM_THREADS)
+
+// WIP
