@@ -58,18 +58,18 @@ kwargs = {'dtype': dtype,
           'device': device,
           'requires_grad': False}
 
-# q_in = torch.randn(options.batch_size, nq, **kwargs)
-# qdot_in = torch.randn(options.batch_size, nqdot, **kwargs)
-# tau_in = torch.randn(options.batch_size, ntau, **kwargs)
+q_in = torch.randn(options.batch_size, nq, **kwargs)
+qdot_in = torch.randn(options.batch_size, nqdot, **kwargs)
+tau_in = torch.randn(options.batch_size, ntau, **kwargs)
 
-q_in = torch.tensor([[1.1, 2, 3.], [1, 2, 3.]], **kwargs)
-qdot_in = torch.tensor([[1, 2, 3.], [1, 2, 3.]], **kwargs)
-tau_in = torch.tensor([[2.0, 0, 1.], [2, 0, 0.]], **kwargs)
+# q_in = torch.tensor([[1.1, 2, 3.], [1, 2, 3.]], **kwargs)
+# qdot_in = torch.tensor([[1, 2, 3.], [1, 2, 3.]], **kwargs)
+# tau_in = torch.tensor([[2.0, 0, 1.], [2, 0, 0.]], **kwargs)
 
 func = Cartpole2LFunction
 
 qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
-qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)
+qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
 # qddot_out = func.apply(q_in, qdot_in, tau_in)
 
 print("q_in:", q_in)

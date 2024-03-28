@@ -6,4 +6,5 @@ cartpole2l.egg-info/top_level.txt
 src/dynamics.cpp
 src/dynamics_cpu.cpp
 src/dynamics_gpu.cu
+src/generated_derivatives.c
 src/generated_dynamics.c
