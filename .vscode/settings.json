@@ -46,6 +46,7 @@
         "fstream": "cpp",
         "optional": "cpp",
         "streambuf": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "core": "cpp"
     }
 }

@@ -19,8 +19,8 @@ torch::Tensor dynamics(const torch::Tensor q_in, const torch::Tensor qdot_in, co
     if (q_in.device().type() == torch::DeviceType::CPU) {
         return dynamics_cpu(q_in, qdot_in, tau_in);
 
-    // } else if (q_in.device().type() == torch::DeviceType::CUDA) {
-    //     return dynamics_gpu(q_in, qdot_in, tau_in);
+    } else if (q_in.device().type() == torch::DeviceType::CUDA) {
+        return dynamics_gpu(q_in, qdot_in, tau_in);
     }
 
     return q_in;
@@ -34,8 +34,8 @@ std::vector<torch::Tensor> derivatives(const torch::Tensor q_in, const torch::Te
     if (q_in.device().type() == torch::DeviceType::CPU) {
         return derivatives_cpu(q_in, qdot_in, tau_in);
 
-    // } else if (q_in.device().type() == torch::DeviceType::CUDA) {
-    //     return dynamics_gpu(q_in, qdot_in, tau_in);
+    } else if (q_in.device().type() == torch::DeviceType::CUDA) {
+        return derivatives_gpu(q_in, qdot_in, tau_in);
     }
 
     return {};

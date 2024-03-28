@@ -3,7 +3,7 @@ from torch import nn
 from torch.autograd import Function
 import torch
 import argparse
-
+import time
 import cartpole2l
 import ipdb
 
@@ -42,8 +42,7 @@ class Cartpole2LFunction(Function):
         return qddot_out, 0
         
 parser = argparse.ArgumentParser()
-parser.add_argument('--example', choices=['py', 'cpp', 'cuda'], default='cpp')
-parser.add_argument('-b', '--batch-size', type=int, default=10)
+parser.add_argument('-b', '--batch-size', type=int, default=1000)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true', default=False)
@@ -68,14 +67,22 @@ tau_in = torch.randn(options.batch_size, ntau, **kwargs)
 
 func = Cartpole2LFunction
 
-qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
-qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
-# qddot_out = func.apply(q_in, qdot_in, tau_in)
+for i in range(10):
+    qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
+    qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
 
-print("q_in:", q_in)
-print("qdot_in:", qdot_in)
-print("tau_in:", tau_in)
-print("\n> qddot_out: ", qddot_out)
-print("\n> qddot_jac_qout: ", qddot_jac_qout)
-print("> qddot_jac_qdotout: ", qddot_jac_qdotout)
-print("> qddot_jac_tauout: ", qddot_jac_tauout)
+start_time = time.time()
+for i in range(1000):
+    qddot_out = cartpole2l.dynamics(q_in, qdot_in, tau_in)
+    qddot_jac_qout, qddot_jac_qdotout, qddot_jac_tauout = cartpole2l.derivatives(q_in, qdot_in, tau_in)  #TODO: check transpose
+end_time = time.time()
+torch.cuda.synchronize()
+print(end_time - start_time)
+
+# print("q_in:", q_in)
+# print("qdot_in:", qdot_in)
+# print("tau_in:", tau_in)
+# print("\n> qddot_out: ", qddot_out)
+# print("\n> qddot_jac_qout: ", qddot_jac_qout)
+# print("> qddot_jac_qdotout: ", qddot_jac_qdotout)
+# print("> qddot_jac_tauout: ", qddot_jac_tauout)

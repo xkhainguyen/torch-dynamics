@@ -231,7 +231,7 @@ static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
+int eval_forward_dynamics(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
   return casadi_f0(arg, res, iw, w, mem);
 }
 
