@@ -6,8 +6,8 @@
 #include <vector>
 
 
-torch::Tensor dynamics_cpu(torch::Tensor, torch::Tensor, torch::Tensor);
-std::vector<torch::Tensor> derivatives_cpu(torch::Tensor, torch::Tensor, torch::Tensor);
+std::vector<torch::Tensor> dynamics_cpu(torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor);
+std::vector<torch::Tensor> derivatives_cpu(torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor);
 
 
 #endif

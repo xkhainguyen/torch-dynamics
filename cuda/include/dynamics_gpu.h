@@ -8,8 +8,8 @@
 #include <cuda_runtime.h>
 
 
-torch::Tensor dynamics_gpu(torch::Tensor, torch::Tensor, torch::Tensor);
-std::vector<torch::Tensor> derivatives_gpu(torch::Tensor, torch::Tensor, torch::Tensor);
+std::vector<torch::Tensor> dynamics_gpu(torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor);
+std::vector<torch::Tensor> derivatives_gpu(torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor);
 
 #endif
 

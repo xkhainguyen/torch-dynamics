@@ -36,18 +36,3 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC)
-
-### ----- Create shared library ----- ###
-project(dynamics)
-
-include_directories(
-        include
-)
-
-add_library(${PROJECT_NAME} SHARED example.cpp
-        forward_dynamics.c
-        forward_derivatives.c)
-
-target_include_directories(${PROJECT_NAME} PUBLIC)
-
-target_compile_options(${PROJECT_NAME} PUBLIC)

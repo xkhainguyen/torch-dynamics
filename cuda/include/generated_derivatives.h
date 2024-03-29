@@ -33,10 +33,10 @@ const char* eval_forward_derivatives_name_out(casadi_int i);
 const casadi_int* eval_forward_derivatives_sparsity_in(casadi_int i);
 const casadi_int* eval_forward_derivatives_sparsity_out(casadi_int i);
 int eval_forward_derivatives_work(casadi_int *sz_arg, casadi_int* sz_res, casadi_int *sz_iw, casadi_int *sz_w);
-#define eval_forward_derivatives_SZ_ARG 3
-#define eval_forward_derivatives_SZ_RES 3
+#define eval_forward_derivatives_SZ_ARG 4
+#define eval_forward_derivatives_SZ_RES 6
 #define eval_forward_derivatives_SZ_IW 0
-#define eval_forward_derivatives_SZ_W 67
+#define eval_forward_derivatives_SZ_W 259
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

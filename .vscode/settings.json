@@ -47,6 +47,8 @@
         "optional": "cpp",
         "streambuf": "cpp",
         "system_error": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "numeric": "cpp",
+        "cinttypes": "cpp"
     }
 }

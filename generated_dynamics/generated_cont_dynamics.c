@@ -15,7 +15,7 @@ extern "C" {
   #define _CASADI_NAMESPACE_CONCAT(NS, ID) NS ## ID
   #define CASADI_PREFIX(ID) CASADI_NAMESPACE_CONCAT(CODEGEN_PREFIX, ID)
 #else
-  #define CASADI_PREFIX(ID) forward_dynamics_ ## ID
+  #define CASADI_PREFIX(ID) generated_cont_dynamics_ ## ID
 #endif
 
 #include <math.h>
@@ -49,7 +49,7 @@ extern "C" {
 
 static const casadi_int casadi_s0[7] = {3, 1, 0, 3, 0, 1, 2};
 
-/* eval_forward_dynamics:(i0[3],i1[3],i2[3])->(o0[3]) */
+/* eval_cont_forward_dynamics:(i0[3],i1[3],i2[3])->(o0[3]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a2, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a3, a4, a5, a6, a7, a8, a9;
   a0=arg[2]? arg[2][0] : 0;
@@ -231,45 +231,45 @@ static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
+CASADI_SYMBOL_EXPORT int eval_cont_forward_dynamics(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem){
   return casadi_f0(arg, res, iw, w, mem);
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics_alloc_mem(void) {
+CASADI_SYMBOL_EXPORT int eval_cont_forward_dynamics_alloc_mem(void) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics_init_mem(int mem) {
+CASADI_SYMBOL_EXPORT int eval_cont_forward_dynamics_init_mem(int mem) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT void eval_forward_dynamics_free_mem(int mem) {
+CASADI_SYMBOL_EXPORT void eval_cont_forward_dynamics_free_mem(int mem) {
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics_checkout(void) {
+CASADI_SYMBOL_EXPORT int eval_cont_forward_dynamics_checkout(void) {
   return 0;
 }
 
-CASADI_SYMBOL_EXPORT void eval_forward_dynamics_release(int mem) {
+CASADI_SYMBOL_EXPORT void eval_cont_forward_dynamics_release(int mem) {
 }
 
-CASADI_SYMBOL_EXPORT void eval_forward_dynamics_incref(void) {
+CASADI_SYMBOL_EXPORT void eval_cont_forward_dynamics_incref(void) {
 }
 
-CASADI_SYMBOL_EXPORT void eval_forward_dynamics_decref(void) {
+CASADI_SYMBOL_EXPORT void eval_cont_forward_dynamics_decref(void) {
 }
 
-CASADI_SYMBOL_EXPORT casadi_int eval_forward_dynamics_n_in(void) { return 3;}
+CASADI_SYMBOL_EXPORT casadi_int eval_cont_forward_dynamics_n_in(void) { return 3;}
 
-CASADI_SYMBOL_EXPORT casadi_int eval_forward_dynamics_n_out(void) { return 1;}
+CASADI_SYMBOL_EXPORT casadi_int eval_cont_forward_dynamics_n_out(void) { return 1;}
 
-CASADI_SYMBOL_EXPORT casadi_real eval_forward_dynamics_default_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT casadi_real eval_cont_forward_dynamics_default_in(casadi_int i) {
   switch (i) {
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT const char* eval_forward_dynamics_name_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT const char* eval_cont_forward_dynamics_name_in(casadi_int i) {
   switch (i) {
     case 0: return "i0";
     case 1: return "i1";
@@ -278,14 +278,14 @@ CASADI_SYMBOL_EXPORT const char* eval_forward_dynamics_name_in(casadi_int i) {
   }
 }
 
-CASADI_SYMBOL_EXPORT const char* eval_forward_dynamics_name_out(casadi_int i) {
+CASADI_SYMBOL_EXPORT const char* eval_cont_forward_dynamics_name_out(casadi_int i) {
   switch (i) {
     case 0: return "o0";
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT const casadi_int* eval_forward_dynamics_sparsity_in(casadi_int i) {
+CASADI_SYMBOL_EXPORT const casadi_int* eval_cont_forward_dynamics_sparsity_in(casadi_int i) {
   switch (i) {
     case 0: return casadi_s0;
     case 1: return casadi_s0;
@@ -294,14 +294,14 @@ CASADI_SYMBOL_EXPORT const casadi_int* eval_forward_dynamics_sparsity_in(casadi_
   }
 }
 
-CASADI_SYMBOL_EXPORT const casadi_int* eval_forward_dynamics_sparsity_out(casadi_int i) {
+CASADI_SYMBOL_EXPORT const casadi_int* eval_cont_forward_dynamics_sparsity_out(casadi_int i) {
   switch (i) {
     case 0: return casadi_s0;
     default: return 0;
   }
 }
 
-CASADI_SYMBOL_EXPORT int eval_forward_dynamics_work(casadi_int *sz_arg, casadi_int* sz_res, casadi_int *sz_iw, casadi_int *sz_w) {
+CASADI_SYMBOL_EXPORT int eval_cont_forward_dynamics_work(casadi_int *sz_arg, casadi_int* sz_res, casadi_int *sz_iw, casadi_int *sz_w) {
   if (sz_arg) *sz_arg = 3;
   if (sz_res) *sz_res = 1;
   if (sz_iw) *sz_iw = 0;
