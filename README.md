@@ -4,14 +4,17 @@ Generate batchable and jitable fast analytic rigid body dynamics and Jacobians/g
 
 Workflow: URDF -> Pinnochio + Casadi -> C code -> multi-threaded CPU/CUDA -> PyTorch 
 
-Procedure from scratch: Skip to 7 if you already have the generated code (no installation required)
-1. Copy your URDF to this directory
-2. Modify `gen_symbolic.cy` for your robot configuration
-3. Build with CMake and run `gen_symbolic` to generate code
-4. `cd generated_dynamics`, modify `example.cpp` for your robot configuration
-5. Build with CMake and test with Julia scripts
-6. Copy generated files to `/cuda` directory, modify wrapper files for your robot configuration
-7. Build with `pip install .` and test with `dynamics.py`
+Procedure from scratch: Skip to 3 if you already have the generated code (no installation required)
+1. Generate the code
+    1. Copy your URDF to this directory
+    2. Adapt `gen_symbolic.cy` for your robot configuration
+    3. Build with CMake and run `gen_symbolic` to generate code
+2. Use the code
+    1. `cd generated_dynamics`, adapt `example.cpp` for your robot configuration
+    2. Build with CMake and test with Julia scripts
+3. Make it multi-threaded
+   1. Copy generated files to `/cuda` directory, adapt wrapper files for your robot configuration   
+   2. Build with `pip install .` and test with Python/PyTorch scripts
 
 ### Install Pinocchio
 Install dependencies
