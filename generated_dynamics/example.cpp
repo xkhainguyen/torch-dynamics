@@ -32,6 +32,6 @@ extern "C"
         double *res[6] = {q_jac_qout, q_jac_qdotout, q_jac_tauout, qdot_jac_qout, qdot_jac_qdotout, qdot_jac_tauout};
         long long int iw[0];
         double w[0];
-        eval_forward_derivatives(args, res, iw, w, 0);
+        eval_forward_derivatives(arg, res, iw, w, 0);
     }
 }

@@ -50,6 +50,7 @@ def finite_diff_pre_processing(q, qdot, tau, h, q_id, qdot_id, tau_id):
     q_plus = q[:,None] + q_id
     q_minus = q[:,None] - q_id
     q_zero = q[:,None].repeat(1, nqdot+ntau, 1)
+    ipdb.set_trace()
     q_total = torch.cat((q_minus, q_zero, q_plus, q_zero), dim=1)
     # ipdb.set_trace()
     qdot_plus = qdot[:,None] + qdot_id

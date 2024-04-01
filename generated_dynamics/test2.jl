@@ -2,6 +2,7 @@ using Libdl
 using LinearAlgebra
 import FiniteDiff as FD
 using BenchmarkTools
+using Plots
 
 function forward_dyn(q, qdot, tau, cont_forward_dynamics)
     qddot = zeros(3);
@@ -69,16 +70,16 @@ h = 0.1  # large step, large error
 q_next1, qdot_next1 = calc_rk4_manual(q, qdot, tau, h, cont_forward_dynamics)
 q_next2, qdot_next2 = calc_rk4(q, qdot, tau, h, forward_dynamics)
 
-# println(norm(q_next1 - q_next2, Inf))
-# println(norm(qdot_next1 - qdot_next2, Inf))
+println(norm(q_next1 - q_next2, Inf))
+println(norm(qdot_next1 - qdot_next2, Inf))
 
 J1, J2, J3, J4, J5, J6 = calc_rk4_derivatives(q, qdot, tau, h, forward_derivatives);
-# println(norm(J1 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[1], q), Inf))
-# println(norm(J2 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[1], qdot), Inf))
-# println(norm(J3 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[1], tau), Inf))
-# println(norm(J4 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[2], q), Inf))
-# println(norm(J5 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[2], qdot), Inf))
-# println(norm(J6 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[2], tau), Inf))
+println(norm(J1 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[1], q), Inf))
+println(norm(J2 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[1], qdot), Inf))
+println(norm(J3 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[1], tau), Inf))
+println(norm(J4 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[2], q), Inf))
+println(norm(J5 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[2], qdot), Inf))
+println(norm(J6 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[2], tau), Inf))
 
 # @show @btime calc_rk4_manual($q, $qdot, $tau, $h, $cont_forward_dynamics);
 # @show @btime calc_rk4($q, $qdot, $tau, $h, $forward_dynamics);
@@ -86,9 +87,10 @@ J1, J2, J3, J4, J5, J6 = calc_rk4_derivatives(q, qdot, tau, h, forward_derivativ
 
 display(q_next2)
 display(qdot_next2)
-display(J1)
-display(J2)
-display(J3)
-display(J4)
-display(J5)
-display(J6)
+# display(J1)
+# display(J2)
+# display(J3)
+# display(J4)
+# display(J5)
+# display(J6)
+
