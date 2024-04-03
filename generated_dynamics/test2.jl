@@ -5,7 +5,7 @@ using BenchmarkTools
 using Plots
 
 function forward_dyn(q, qdot, tau, cont_forward_dynamics)
-    qddot = zeros(3);
+    qddot = zeros(length(q))
     ccall(cont_forward_dynamics, Cvoid, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ref{Cdouble}), q, qdot, tau, qddot)
     return qddot
 end
@@ -62,11 +62,12 @@ lib = dlopen(joinpath(@__DIR__, "build/libdynamics.so"))
 cont_forward_dynamics = dlsym(lib, :cont_forward_dynamics)
 forward_dynamics = dlsym(lib, :forward_dynamics)
 forward_derivatives = dlsym(lib, :forward_derivatives)
-# q, qdot, tau = randn(3), randn(3), randn(3);
-q = [1.1, 2, 3.]
-qdot = [1, 2, 3.]
-tau = [2.0, 0, 1.]
-h = 0.1  # large step, large error
+nq = 2
+q, qdot, tau = randn(nq), randn(nq), randn(nq);
+# q = [1.1, 2, 3.]
+# qdot = [1, 2, 3.]
+# tau = [2.0, 0, 1.]
+h = 0.01  # large step, large error
 q_next1, qdot_next1 = calc_rk4_manual(q, qdot, tau, h, cont_forward_dynamics)
 q_next2, qdot_next2 = calc_rk4(q, qdot, tau, h, forward_dynamics)
 
