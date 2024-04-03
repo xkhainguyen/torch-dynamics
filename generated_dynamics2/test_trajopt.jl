@@ -6,10 +6,8 @@ Pkg.instantiate()
 using Libdl
 using LinearAlgebra
 using Printf
-using JLD2
 import ForwardDiff as FD
 import Random
-using Plots
 
 include(joinpath(@__DIR__, "simple_altro.jl"))
 
@@ -75,20 +73,20 @@ end
 
 # here is the script
 let
-    nx = 4
+    nx = 6
     nu = 1
-    N =  150
+    N = 150
     dt = 0.05
-    x0 = [0, pi, 0, 0.]
-    xg = [0, 0, 0, 0.0]
+    x0 = [0.1, 0.1, 0.0, 0, 0, 0.0]
+    xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
     Uref = [zeros(nu) for i = 1:N-1]
-    Q = 1e1 * Diagonal([1, 10, 1, 1.0])
+    Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
     R = 1e-1 * Diagonal([1.0])
-    Qf = 100 * Q
+    Qf = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
 
-    u_min = -30 * ones(nu)
-    u_max = 30 * ones(nu)
+    u_min = -2000 * ones(nu)
+    u_max = 2000 * ones(nu)
 
     # state is x y v θ
     x_min = -2000 * ones(nx)
@@ -113,6 +111,10 @@ let
         Xref=Xref,
         Uref=Uref,
         dt=dt,
+        mc=1.0,
+        mp=0.2,
+        l=0.5,
+        g=9.81,
     )
 
     # # Test dynamics
@@ -134,10 +136,6 @@ let
 
     X = [deepcopy(x0) for i = 1:N]
     U = [0.01 * randn(nu) for i = 1:N-1]
-    for i = 1:Int(N/2)
-        U[i] .= u_min
-        U[Int(N/2)-1+i] .= u_max
-    end
 
     Xn = deepcopy(X)
     Un = deepcopy(U)
@@ -147,15 +145,10 @@ let
     p = [zeros(nx) for i = 1:N]      # cost to go linear term
     d = [zeros(nu) for i = 1:N-1]    # feedforward control
     K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
+    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=1000, verbose=true, ρ=1e0, ϕ=10.0)
 
     for i = 1:N-1
         X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
         println(X[i])
     end
-
-    # visualize X trajectory with time
-    X = hcat(X...)
-    plot(0:dt:(N-1)*dt, X', label=["x" "theta" "v" "omega"], xlabel="time", ylabel="position", title="Trajectory")
-    savefig("trajopt.png")
 end
