@@ -83,7 +83,7 @@ let
     dt = 0.05
     # x0 = [0, pi, 0, 0.]
     # xg = [0, 0, 0, 0.0]
-    x0 = [0, 0.01, 0, 0.0, 0, 0]
+    x0 = [0.1, 0.1, 0, 0.0, 0, 0]
     xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
     Uref = [zeros(nu) for i = 1:N-1]
@@ -92,8 +92,8 @@ let
     R = 1e-1 * Diagonal([1.0])
     Qf = 100 * Q
 
-    u_min = -30 * ones(nu)
-    u_max = 30 * ones(nu)
+    u_min = -3000 * ones(nu)
+    u_max = 3000 * ones(nu)
 
     # state is x y v θ
     x_min = -2000 * ones(nx)
@@ -158,6 +158,7 @@ let
     for i = 1:N-1
         X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
         println(X[i])
+        # println(Un[i])
     end
 
     # # visualize X trajectory with time
