@@ -64,10 +64,9 @@ forward_dynamics = dlsym(lib, :forward_dynamics)
 forward_derivatives = dlsym(lib, :forward_derivatives)
 nq = 2
 q, qdot, tau = randn(nq), randn(nq), randn(nq);
-# q = [1.1, 2, 3.]
-# qdot = [1, 2, 3.]
-# tau = [2.0, 0, 1.]
-h = 0.01  # large step, large error
+q = [0.5, 0.5]
+qdot = [2.2, 1.0]
+h = 0.05  # large step, large error
 q_next1, qdot_next1 = calc_rk4_manual(q, qdot, tau, h, cont_forward_dynamics)
 q_next2, qdot_next2 = calc_rk4(q, qdot, tau, h, forward_dynamics)
 
