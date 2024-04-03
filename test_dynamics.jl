@@ -58,14 +58,19 @@ function calc_rk4_derivatives(q, qdot, u, h, forward_derivatives)
 end
 
 # Load library
-lib = dlopen(joinpath(@__DIR__, "build/libdynamics.so"))
+CARTPOLE_PATH = joinpath(@__DIR__, "cartpole2l/")
+lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
 cont_forward_dynamics = dlsym(lib, :cont_forward_dynamics)
 forward_dynamics = dlsym(lib, :forward_dynamics)
 forward_derivatives = dlsym(lib, :forward_derivatives)
-nq = 2
-q, qdot, tau = randn(nq), randn(nq), randn(nq);
-q = [0.5, 0.5]
-qdot = [2.2, 1.0]
+nq = 3
+# q, qdot, tau = randn(nq), randn(nq), randn(nq);
+q = [0.5, 0.5, 0.3]
+qdot = [0.7, 2.2, 1.0]
+tau = [-1.1, 0., 0.]
+# q = [0.5, 0.5]
+# qdot = [2.2, 1.0]
+# tau = [-1.1, 0.]
 h = 0.05  # large step, large error
 q_next1, qdot_next1 = calc_rk4_manual(q, qdot, tau, h, cont_forward_dynamics)
 q_next2, qdot_next2 = calc_rk4(q, qdot, tau, h, forward_dynamics)
@@ -89,8 +94,8 @@ display(q_next2)
 display(qdot_next2)
 # display(J1)
 # display(J2)
-# display(J3)
+display(J3)
 # display(J4)
 # display(J5)
-# display(J6)
+display(J6)
 

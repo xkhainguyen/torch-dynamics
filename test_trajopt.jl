@@ -13,7 +13,7 @@ using Plots
 
 include(joinpath(@__DIR__, "simple_altro.jl"))
 
-CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
+CARTPOLE_PATH = joinpath(@__DIR__, "cartpole2l/")
 lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
 forward_dynamics = dlsym(lib, :forward_dynamics)
 forward_derivatives = dlsym(lib, :forward_derivatives)
@@ -76,7 +76,7 @@ end
 
 # here is the script
 let
-    nx = 4
+    nx = 6
     nu = 1
     N =  150
     dt = 0.05
@@ -117,9 +117,9 @@ let
     )
 
     # Test dynamics
-    # x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
-    x = [0.5, 0.5, 2.2, 1.0]
-    u = [3.6]
+    x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
+    # x = [0.5, 0.5, 2.2, 1.0]
+    u = [-1.1]
     xn = discrete_dynamics(params,x,u,1)
     A = FD.jacobian(_x -> discrete_dynamics(params,_x,u,1),x)
     B = FD.jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
