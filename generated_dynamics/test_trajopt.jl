@@ -119,32 +119,36 @@ let
 
     # Test dynamics
     # x = [0.0,pi-2,1.0,2.0,3.0,4.0]
+    x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
     # u = [1.0]
-    # xn = discrete_dynamics(params,x,u,1)
-    # A = FD.jacobian(_x -> discrete_dynamics(params,_x,u,1),x)
-    # B = FD.jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
-    # A1, B1 = discrete_jacobians(params,x,u)
-    # println("xn = $xn")
-    # println("A = $A")
-    # println("B = $B")
-    # println("A1 = $A1")
-    # println("B1 = $B1")
+    u = [3.6]
+    xn = discrete_dynamics(params,x,u,1)
+    A = FD.jacobian(_x -> discrete_dynamics(params,_x,u,1),x)
+    B = FD.jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
+    A1, B1 = discrete_jacobians(params,x,u)
+    println("xn = $xn")
+    println("A = $A")
+    println("B = $B")
+    println("A1 = ")
+    display(A1)
+    println("B1 = ")
+    display(B1)
 
-    X = [deepcopy(x0) for i = 1:N]
-    U = [0.01 * randn(nu) for i = 1:N-1]
+    # X = [deepcopy(x0) for i = 1:N]
+    # U = [0.01 * randn(nu) for i = 1:N-1]
 
-    Xn = deepcopy(X)
-    Un = deepcopy(U)
+    # Xn = deepcopy(X)
+    # Un = deepcopy(U)
 
 
-    P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
-    p = [zeros(nx) for i = 1:N]      # cost to go linear term
-    d = [zeros(nu) for i = 1:N-1]    # feedforward control
-    K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=1000, verbose=true, ρ=1e0, ϕ=10.0)
+    # P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
+    # p = [zeros(nx) for i = 1:N]      # cost to go linear term
+    # d = [zeros(nu) for i = 1:N-1]    # feedforward control
+    # K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
+    # Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=1000, verbose=true, ρ=1e0, ϕ=10.0)
 
-    for i = 1:N-1
-        X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
-        println(X[i])
-    end
+    # for i = 1:N-1
+    #     X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
+    #     println(X[i])
+    # end
 end
