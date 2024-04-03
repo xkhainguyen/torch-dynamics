@@ -6,13 +6,14 @@ Pkg.instantiate()
 using Libdl
 using LinearAlgebra
 using Printf
-using JLD2
+# using JLD2
 import ForwardDiff as FD
 import Random
-using Plots
+# using Plots
 
 include(joinpath(@__DIR__, "simple_altro.jl"))
 
+##
 
 #---------------------THIS IS WHAT YOU NEED TO INPUT--------
 function discrete_dynamics(p::NamedTuple, x, u, k)
@@ -83,7 +84,7 @@ let
     dt = 0.05
     # x0 = [0, pi, 0, 0.]
     # xg = [0, 0, 0, 0.0]
-    x0 = [0.1, 0.1, 0, 0.0, 0, 0]
+    x0 = [0, π, 0, 0.0, 0, 0]
     xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
     Uref = [zeros(nu) for i = 1:N-1]
