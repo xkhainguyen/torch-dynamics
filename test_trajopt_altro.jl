@@ -1,15 +1,15 @@
 using Pkg
 # Pkg.activate(joinpath(@__DIR__, ".."))
 Pkg.activate(@__DIR__)
-Pkg.instantiate()
+# Pkg.instantiate()
 
 using Libdl
 using LinearAlgebra
 using Printf
-using JLD2
-import FiniteDiff as FD
+import ForwardDiff as FD
 import Random
-# using Plots
+using PyCall
+using JLD2    
 
 include(joinpath(@__DIR__, "simple_altro.jl"))
 
@@ -80,7 +80,7 @@ let
     nq = 3
     nx = nq * 2
     nu = 1
-    N = 50
+    N = 60
     dt = 0.05
     # x0 = [0, pi, 0, 0.]
     # xg = [0, 0, 0, 0.0]
@@ -93,8 +93,8 @@ let
     R = 1e-1 * Diagonal([1.0])
     Qf = 100 * Q
 
-    u_min = -3000 * ones(nu)
-    u_max = 3000 * ones(nu)
+    u_min = -300 * ones(nu)
+    u_max = 300 * ones(nu)
 
     # state is x y v θ
     x_min = -2000 * ones(nx)
@@ -123,49 +123,52 @@ let
         forward_derivatives=forward_derivatives
     )
 
-    # Test dynamics
-    x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
-    # x = [0.2, 1.2, 4.2, 1.8]
-    u = [-4.1]
-    xn = discrete_dynamics(params,x,u,1)
-    A = FD.finite_difference_jacobian(_x -> discrete_dynamics(params,_x,u,1),x)  # AUTODIFF DOESN'T WORK, USE FiniteDiff.jl
-    B = FD.finite_difference_jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
-    A1, B1 = discrete_jacobians(params,x,u)
-    println("\nxn = $xn")
-    println("\nA = ")
-    display(A)
-    println("\nB = ")
-    display(B)
-    println("\neA1 = ")
-    display(norm(A-A1)/norm(A))
-    println("\neB1 = ")
-    display(norm(B-B1)/norm(B))
+    # # Test dynamics
+    # x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
+    # # x = [0.2, 1.2, 4.2, 1.8]
+    # u = [-4.1]
+    # xn = discrete_dynamics(params,x,u,1)
+    # A = FD.finite_difference_jacobian(_x -> discrete_dynamics(params,_x,u,1),x)  # AUTODIFF DOESN'T WORK, USE FiniteDiff.jl
+    # B = FD.finite_difference_jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
+    # A1, B1 = discrete_jacobians(params,x,u)
+    # println("\nxn = $xn")
+    # println("\nA = ")
+    # display(A)
+    # println("\nB = ")
+    # display(B)
+    # println("\neA1 = ")
+    # display(norm(A-A1)/norm(A))
+    # println("\neB1 = ")
+    # display(norm(B-B1)/norm(B))
 
-    # X = [deepcopy(x0) for i = 1:N]
-    # U = [0.01 * randn(nu) for i = 1:N-1]
-    # # for i = 1:Int(N/2)
-    # #     U[i] .= u_min
-    # #     U[Int(N/2)-1+i] .= u_max
-    # # end
+    X = [deepcopy(x0) for i = 1:N]
+    U = [0.01 * randn(nu) for i = 1:N-1]
+    # for i = 1:Int(N/2)
+    #     U[i] .= u_min
+    #     U[Int(N/2)-1+i] .= u_max
+    # end
 
-    # Xn = deepcopy(X)
-    # Un = deepcopy(U)
+    Xn = deepcopy(X)
+    Un = deepcopy(U)
 
 
-    # P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
-    # p = [zeros(nx) for i = 1:N]      # cost to go linear term
-    # d = [zeros(nu) for i = 1:N-1]    # feedforward control
-    # K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    # Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
+    P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
+    p = [zeros(nx) for i = 1:N]      # cost to go linear term
+    d = [zeros(nu) for i = 1:N-1]    # feedforward control
+    K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
+    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
 
     # for i = 1:N-1
     #     X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
     #     println(X[i])
     #     # println(Un[i])
     # end
-
-    # # visualize X trajectory with time
-    # X = hcat(X...)
-    # plot(0:dt:(N-1)*dt, X', label=["x" "theta" "v" "omega"], xlabel="time", ylabel="position", title="Trajectory")
-    # savefig("trajopt.png")
+    
+    traj = (Xn, Un)
+    save_object("traj.jld2", traj)
+    
+    np = pyimport("numpy")
+    X_np = np.asarray(X)
+    U_np = np.asarray(U)
+    np.savez("traj", X_np=X_np, U_np=U_np)
 end

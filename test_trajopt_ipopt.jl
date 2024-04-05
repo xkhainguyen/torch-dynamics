@@ -8,7 +8,7 @@ import FiniteDiff
 # import Convex as cvx 
 # import Rotations as rot
 using LinearAlgebra
-using Plots
+# using Plots
 using Random
 using Libdl
 
@@ -113,14 +113,14 @@ function solve_cartpole_swingup(verbose=true)
     nq = 3
     nx = nq * 2
     nu = 1
-    dt = 1 / 30
-    tf = 5.0
+    dt = 0.03
+    tf = 3.0
     t_vec = 0:dt:tf
     N = length(t_vec)
 
     # LQR cost
     # Q = collect(Diagonal([500; 40; 30; 100]))
-    Q = 100 * diagm(ones(nx))
+    Q = 10 * diagm(ones(nx))
     R = 1 * diagm(ones(nu))
     Qf = 10 * Q
 
@@ -128,6 +128,8 @@ function solve_cartpole_swingup(verbose=true)
     idx = create_idx(nx, nu, N)
 
     # initial and goal states
+    # xic = [0, π, 0, 0.0]
+    # xg = [0, 0, 0, 0.0]
     xic = [0, π, 0, 0.0, 0, 0]
     xg = [0, 0, 0, 0, 0, 0.0]
 
@@ -137,6 +139,10 @@ function solve_cartpole_swingup(verbose=true)
     # primal bounds 
     x_l = -Inf * ones(idx.nz)
     x_u = Inf * ones(idx.nz)
+    for i = 1:(N-1)
+        x_l[idx.u[i]] .= -1000.0*ones(nu)
+        x_u[idx.u[i]] .= 1000.0*ones(nu)
+    end
 
     # inequality constraint bounds (this is what we do when we have no inequality constraints)
     c_l = zeros(0)
