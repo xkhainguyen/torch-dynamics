@@ -7,7 +7,7 @@ using Libdl
 using LinearAlgebra
 using Printf
 using JLD2
-import ForwardDiff as FD
+import FiniteDiff as FD
 import Random
 using Plots
 
@@ -122,44 +122,46 @@ let
         forward_derivatives=forward_derivatives
     )
 
-    # # Test dynamics
-    # x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
-    # # x = [0.5, 0.5, 2.2, 1.0]
-    # u = [-1.1]
-    # xn = discrete_dynamics(params,x,u,1)
-    # A = FD.jacobian(_x -> discrete_dynamics(params,_x,u,1),x)
-    # B = FD.jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
-    # A1, B1 = discrete_jacobians(params,x,u)
-    # println("xn = $xn")
-    # println("A = $A")
-    # println("B = $B")
-    # println("A1 = ")
-    # display(A1)
-    # println("B1 = ")
-    # display(B1)
+    # Test dynamics
+    x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
+    # x = [0.2, 1.2, 4.2, 1.8]
+    u = [-4.1]
+    xn = discrete_dynamics(params,x,u,1)
+    A = FD.finite_difference_jacobian(_x -> discrete_dynamics(params,_x,u,1),x)  # AUTODIFF DOESN'T WORK, USE FiniteDiff.jl
+    B = FD.finite_difference_jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
+    A1, B1 = discrete_jacobians(params,x,u)
+    println("\nxn = $xn")
+    println("\nA = ")
+    display(A)
+    println("\nB = ")
+    display(B)
+    println("\neA1 = ")
+    display(norm(A-A1)/norm(A))
+    println("\neB1 = ")
+    display(norm(B-B1)/norm(B))
 
-    X = [deepcopy(x0) for i = 1:N]
-    U = [0.01 * randn(nu) for i = 1:N-1]
-    # for i = 1:Int(N/2)
-    #     U[i] .= u_min
-    #     U[Int(N/2)-1+i] .= u_max
+    # X = [deepcopy(x0) for i = 1:N]
+    # U = [0.01 * randn(nu) for i = 1:N-1]
+    # # for i = 1:Int(N/2)
+    # #     U[i] .= u_min
+    # #     U[Int(N/2)-1+i] .= u_max
+    # # end
+
+    # Xn = deepcopy(X)
+    # Un = deepcopy(U)
+
+
+    # P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
+    # p = [zeros(nx) for i = 1:N]      # cost to go linear term
+    # d = [zeros(nu) for i = 1:N-1]    # feedforward control
+    # K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
+    # Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
+
+    # for i = 1:N-1
+    #     X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
+    #     println(X[i])
+    #     # println(Un[i])
     # end
-
-    Xn = deepcopy(X)
-    Un = deepcopy(U)
-
-
-    P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
-    p = [zeros(nx) for i = 1:N]      # cost to go linear term
-    d = [zeros(nu) for i = 1:N-1]    # feedforward control
-    K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
-
-    for i = 1:N-1
-        X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
-        println(X[i])
-        # println(Un[i])
-    end
 
     # # visualize X trajectory with time
     # X = hcat(X...)

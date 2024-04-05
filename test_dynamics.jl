@@ -58,7 +58,7 @@ function calc_rk4_derivatives(q, qdot, u, h, forward_derivatives)
 end
 
 # Load library
-CARTPOLE_PATH = joinpath(@__DIR__, "cartpole2l/")
+CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
 lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
 cont_forward_dynamics = dlsym(lib, :cont_forward_dynamics)
 forward_dynamics = dlsym(lib, :forward_dynamics)
