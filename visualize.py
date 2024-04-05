@@ -2,7 +2,6 @@ from ctypes import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import ipdb
 
 def calc_rk4(q, qdot, tau, h, forward_dynamics):
     q_next = np.zeros(len(q), dtype=np.float64)
@@ -62,7 +61,7 @@ def animate_cartpole2(X):
     fig, ax = plt.subplots(1, 1)
     ax.set_aspect('equal')
     print(p)
-    ax.set_xlim(-2, 2)
+    ax.set_xlim(-5, 5)
     ax.set_ylim(-2, 2)
     # plt.show()
     # plt.draw()
@@ -113,34 +112,39 @@ if __name__ == "__main__":
     nqdot = nq
     ntau = nq
 
-    h = np.float64(0.05)
-    qhist = np.zeros((200, nq+nqdot), dtype=np.float64)
+    # h = np.float64(0.05)
+    # qhist = np.zeros((200, nq+nqdot), dtype=np.float64)
 
-    q = np.array([0.0, np.pi, 0], dtype=np.float64)
-    qdot = np.array([0.0, 0.0, 0.0], dtype=np.float64)
-    tau = np.array([10.0, 0.0, 0.0], dtype=np.float64)
+    # q = np.array([0.0, np.pi, 0], dtype=np.float64)
+    # qdot = np.array([0.0, 0.0, 0.0], dtype=np.float64)
+    # tau = np.array([10.0, 0.0, 0.0], dtype=np.float64)
 
-    # q = np.array([0.0, np.pi], dtype=np.float64)
-    # qdot = np.array([0.0, 0.0], dtype=np.float64)
-    # tau = np.array([-10.0, 0.0], dtype=np.float64)
+    # # q = np.array([0.0, np.pi], dtype=np.float64)
+    # # qdot = np.array([0.0, 0.0], dtype=np.float64)
+    # # tau = np.array([-10.0, 0.0], dtype=np.float64)
     
 
-    # q = np.array([1.1, 2, 3.], dtype=np.float64)
-    # qdot = np.array([1, 2, 3.], dtype=np.float64)
-    # tau = np.array([2.0, 0, 1.], dtype=np.float64)
-    # h = np.float64(0.1)
+    # # q = np.array([1.1, 2, 3.], dtype=np.float64)
+    # # qdot = np.array([1, 2, 3.], dtype=np.float64)
+    # # tau = np.array([2.0, 0, 1.], dtype=np.float64)
+    # # h = np.float64(0.1)
 
 
-    lib = CDLL("build/libdynamics.so")
-    print(lib)
+    # lib = CDLL("build/libdynamics.so")
+    # print(lib)
 
-    # q, qdot = calc_rk4(q, qdot, tau, h, lib.forward_dynamics)
-    # print(q, qdot)
+    # # q, qdot = calc_rk4(q, qdot, tau, h, lib.forward_dynamics)
+    # # print(q, qdot)
 
-    rollout(qhist, q, qdot, tau, h, lib.forward_dynamics)
-    print(qhist)
+    # rollout(qhist, q, qdot, tau, h, lib.forward_dynamics)
+    # print(qhist)
 
     # anime_cartpole1(qhist[:,:2])
-    animate_cartpole2(qhist.T)
+    
+    traj = np.load("traj.npz")
+    x_ref = traj["X_np"]
+    u_ref = np.squeeze(traj["U_np"])
+
+    animate_cartpole2(x_ref.T)
 
 
