@@ -14,7 +14,7 @@ Procedure from scratch: Skip to 3 if you already have the generated code (no ins
     2. Build with CMake and test with Julia scripts
 3. Make it multi-threaded
    1. Copy generated files to `/cuda` directory, adapt wrapper files for your robot configuration   
-   2. Build with `pip install .` and test with Python/PyTorch scripts
+   2. Build with `pip install .` and test with Julia/Python/PyTorch scripts for dynamics and trajopt
 
 ### Install Pinocchio
 Install dependencies
