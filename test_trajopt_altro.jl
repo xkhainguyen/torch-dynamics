@@ -73,14 +73,14 @@ end
 
 # here is the script to run trajopt
 let
-    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole2l/")
+    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
     lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
     forward_dynamics = dlsym(lib, :forward_dynamics)
     forward_derivatives = dlsym(lib, :forward_derivatives)
     nq = 3
     nx = nq * 2
     nu = 1
-    N = 60
+    N = 100
     dt = 0.05
     # x0 = [0, pi, 0, 0.]
     # xg = [0, 0, 0, 0.0]
