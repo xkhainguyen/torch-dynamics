@@ -112,7 +112,7 @@ function solve_cartpole_swingup(verbose=true)
     nx = nq * 2
     nu = 1
     dt = 0.04
-    tf = 3.0
+    tf = 6.0
     t_vec = 0:dt:tf
     N = length(t_vec)
 
@@ -138,8 +138,8 @@ function solve_cartpole_swingup(verbose=true)
     x_l = -Inf * ones(idx.nz)
     x_u = Inf * ones(idx.nz)
     for i = 1:(N-1)
-        x_l[idx.u[i]] .= -100.0*ones(nu)
-        x_u[idx.u[i]] .= 100.0*ones(nu)
+        x_l[idx.u[i]] .= -50.0*ones(nu)
+        x_u[idx.u[i]] .= 50.0*ones(nu)
     end
 
     # inequality constraint bounds (this is what we do when we have no inequality constraints)
@@ -153,10 +153,10 @@ function solve_cartpole_swingup(verbose=true)
     for i in 1:N-1
         if i < N / 2
             z0[idx.x[i]] = 0.001 * randn(idx.nx) + xic
-            z0[idx.u[i]] = 0.001 * randn(idx.nu)
+            z0[idx.u[i]] = 0.01 * randn(idx.nu)
         else
             z0[idx.x[i]] = 0.001 * randn(idx.nx) + xg
-            z0[idx.u[i]] = 0.001 * randn(idx.nu)
+            z0[idx.u[i]] = 0.01 * randn(idx.nu)
         end
     end
     z0[idx.x[N]] = 0.001 * randn(idx.nx) + xg
@@ -167,7 +167,7 @@ function solve_cartpole_swingup(verbose=true)
 
     Z = fmincon(cartpole_cost, cartpole_equality_constraint, inequality_constraint,
         x_l, x_u, c_l, c_u, z0, params, diff_type;
-        tol=1e-6, c_tol=1e-6, max_iters=10_000, verbose=verbose)
+        tol=1e-5, c_tol=1e-5, max_iters=10_000, verbose=verbose)
 
     # pull the X and U solutions out of Z
     X = [Z[idx.x[i]] for i = 1:N]
