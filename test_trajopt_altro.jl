@@ -77,24 +77,24 @@ let
     lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
     forward_dynamics = dlsym(lib, :forward_dynamics)
     forward_derivatives = dlsym(lib, :forward_derivatives)
-    nq = 3
+    nq = 2
     nx = nq * 2
     nu = 1
     N = 100
     dt = 0.05
-    # x0 = [0, pi, 0, 0.]
-    # xg = [0, 0, 0, 0.0]
-    x0 = [0, π, 0, 0.0, 0, 0]
-    xg = [0, 0, 0, 0, 0, 0.0]
+    x0 = [0, pi, 0, 0.]
+    xg = [0, 0, 0, 0.0]
+    # x0 = [0, π, 0, 0.0, 0, 0]
+    # xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
     Uref = [zeros(nu) for i = 1:N-1]
-    # Q = 1e1 * Diagonal([1, 10, 1, 1.0])
-    Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
+    Q = 1e1 * Diagonal([1, 10, 1, 1.0])
+    # Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
     R = 1e-1 * Diagonal([1.0])
     Qf = 100 * Q
 
-    u_min = -300 * ones(nu)
-    u_max = 300 * ones(nu)
+    u_min = -100 * ones(nu)
+    u_max = 100 * ones(nu)
 
     # state is x y v θ
     x_min = -2000 * ones(nx)
@@ -163,12 +163,14 @@ let
     #     println(X[i])
     #     # println(Un[i])
     # end
+    display(Xn)
+    display(Un)
     
-    traj = (Xn, Un)
-    save_object("traj.jld2", traj)
+    # traj = (Xn, Un)
+    # save_object("traj.jld2", traj)
     
-    np = pyimport("numpy")
-    X_np = np.asarray(X)
-    U_np = np.asarray(U)
-    np.savez("traj", X_np=X_np, U_np=U_np)
+    # np = pyimport("numpy")
+    # X_np = np.asarray(X)
+    # U_np = np.asarray(U)
+    # np.savez("traj", X_np=X_np, U_np=U_np)
 end
