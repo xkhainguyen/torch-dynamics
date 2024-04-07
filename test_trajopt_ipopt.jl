@@ -126,7 +126,7 @@ function solve_cartpole_swingup(verbose=true)
     idx = create_idx(nx, nu, N)
 
     # initial and goal states
-    xic = [0, 0.2, 0, 0.0]
+    xic = [0, π, 0, 0.0]
     xg = [0, 0, 0, 0.0]
     # xic = [0, π, 0, 0.0, 0, 0]
     # xg = [0, 0, 0, 0, 0, 0.0]
