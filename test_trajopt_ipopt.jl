@@ -103,7 +103,7 @@ function cartpole_equality_constraint(params::NamedTuple, Z::Vector)::Vector
 end
 
 function solve_cartpole_swingup(verbose=true)
-    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
+    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l-v2/")
     lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
     cont_forward_dynamics = dlsym(lib, :cont_forward_dynamics)
 
@@ -111,14 +111,14 @@ function solve_cartpole_swingup(verbose=true)
     nq = 2
     nx = nq * 2
     nu = 1
-    dt = 0.04
-    tf = 6.0
+    dt = 0.05
+    tf = 5.0
     t_vec = 0:dt:tf
     N = length(t_vec)
 
     # LQR cost
     # Q = collect(Diagonal([500; 40; 30; 100]))
-    Q = 10 * diagm(ones(nx))
+    Q = 100 * diagm(ones(nx))
     R = 1 * diagm(ones(nu))
     Qf = 10 * Q
 
@@ -126,7 +126,7 @@ function solve_cartpole_swingup(verbose=true)
     idx = create_idx(nx, nu, N)
 
     # initial and goal states
-    xic = [0, π, 0, 0.0]
+    xic = [0, pi, 0.2, 0.0]
     xg = [0, 0, 0, 0.0]
     # xic = [0, π, 0, 0.0, 0, 0]
     # xg = [0, 0, 0, 0, 0, 0.0]
@@ -138,8 +138,8 @@ function solve_cartpole_swingup(verbose=true)
     x_l = -Inf * ones(idx.nz)
     x_u = Inf * ones(idx.nz)
     for i = 1:(N-1)
-        x_l[idx.u[i]] .= -50.0*ones(nu)
-        x_u[idx.u[i]] .= 50.0*ones(nu)
+        x_l[idx.u[i]] .= -5.0*ones(nu)
+        x_u[idx.u[i]] .= 5.0*ones(nu)
     end
 
     # inequality constraint bounds (this is what we do when we have no inequality constraints)
@@ -153,10 +153,10 @@ function solve_cartpole_swingup(verbose=true)
     for i in 1:N-1
         if i < N / 2
             z0[idx.x[i]] = 0.001 * randn(idx.nx) + xic
-            z0[idx.u[i]] = 0.01 * randn(idx.nu)
+            z0[idx.u[i]] = 0.001 * randn(idx.nu)
         else
             z0[idx.x[i]] = 0.001 * randn(idx.nx) + xg
-            z0[idx.u[i]] = 0.01 * randn(idx.nu)
+            z0[idx.u[i]] = 0.001 * randn(idx.nu)
         end
     end
     z0[idx.x[N]] = 0.001 * randn(idx.nx) + xg

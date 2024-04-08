@@ -154,10 +154,10 @@ void gen_rk4_forward_dynamics()
 
 int main(int argc, char *argv[])
 {
-    std::string rel_path = "pendulum1l.urdf";
+    std::string rel_path = "cartpole1l-v2.urdf";
     std::string current_path(__FILE__); // Get the full path of the current source file
     std::string abs_path = current_path.substr(0, current_path.find_last_of("/\\") + 1) + rel_path;
-    std::string gen_path = current_path.substr(0, current_path.find_last_of("/\\") + 1) + "/pendulum1l/";
+    std::string gen_path = current_path.substr(0, current_path.find_last_of("/\\") + 1) + "/cartpole1l-v2/";
 
     pinocchio::urdf::buildModel(abs_path, model, false);
     model.gravity.linear(model.gravity981);

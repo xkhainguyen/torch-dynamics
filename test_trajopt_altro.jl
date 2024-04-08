@@ -73,16 +73,19 @@ end
 
 # here is the script to run trajopt
 let
-    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
+    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l-v2/")
     lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
     forward_dynamics = dlsym(lib, :forward_dynamics)
     forward_derivatives = dlsym(lib, :forward_derivatives)
     nq = 2
     nx = nq * 2
     nu = 1
-    N = 100
     dt = 0.05
-    x0 = [0, pi, 0, 0.]
+    tf = 1.0
+    t_vec = 0:dt:tf
+    N = length(t_vec)
+
+    x0 = [0, 0.2, 0.2, 0.0]
     xg = [0, 0, 0, 0.0]
     # x0 = [0, π, 0, 0.0, 0, 0]
     # xg = [0, 0, 0, 0, 0, 0.0]
@@ -93,12 +96,12 @@ let
     R = 1e-1 * Diagonal([1.0])
     Qf = 100 * Q
 
-    u_min = -100 * ones(nu)
-    u_max = 100 * ones(nu)
+    u_min = -5 * ones(nu)
+    u_max = 5 * ones(nu)
 
     # state is x y v θ
-    x_min = -2000 * ones(nx)
-    x_max = 2000 * ones(nx)
+    x_min = -200 * ones(nx)
+    x_max = 200 * ones(nx)
 
     ncx = 2 * nx
     ncu = 2 * nu
@@ -123,10 +126,11 @@ let
         forward_derivatives=forward_derivatives
     )
 
-    # # Test dynamics
+    # Test dynamics
     # x = [0.5, 0.5, 0.3, 0.7, 2.2, 1.0]
-    # # x = [0.2, 1.2, 4.2, 1.8]
-    # u = [-4.1]
+    # x = [0, 3.141592653589793, 0, 0.]
+    # x = [0.2, 1.2, 4.2, 1.8]
+    # u = [49.99999999327998]
     # xn = discrete_dynamics(params,x,u,1)
     # A = FD.finite_difference_jacobian(_x -> discrete_dynamics(params,_x,u,1),x)  # AUTODIFF DOESN'T WORK, USE FiniteDiff.jl
     # B = FD.finite_difference_jacobian(_u -> discrete_dynamics(params,x,_u,1),u)
@@ -156,7 +160,7 @@ let
     p = [zeros(nx) for i = 1:N]      # cost to go linear term
     d = [zeros(nu) for i = 1:N-1]    # feedforward control
     K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-1, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
+    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-2, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
 
     # for i = 1:N-1
     #     X[i+1] = discrete_dynamics(params, X[i], Un[i], i)

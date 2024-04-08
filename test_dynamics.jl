@@ -58,33 +58,36 @@ function calc_rk4_derivatives(q, qdot, u, h, forward_derivatives)
 end
 
 # Load library
-CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l/")
+CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l-v2/")
 lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
 cont_forward_dynamics = dlsym(lib, :cont_forward_dynamics)
 forward_dynamics = dlsym(lib, :forward_dynamics)
 forward_derivatives = dlsym(lib, :forward_derivatives)
 nq = 3
 # q, qdot, tau = randn(nq), randn(nq), randn(nq);
-q = [0.5, 0.5, 0.3]
-qdot = [0.7, 2.2, 1.0]
-tau = [-1.1, 0., 0.]
+# q = [0.5, 0.5, 0.3]
+q = [1.0, 0.0]
+qdot = [0.0, 0.0]
+# qdot = [0.7, 2.2, 1.0]
+# tau = [-1.1, 0., 0.]
+tau = [10.0, 0.0]
 # q = [0.5, 0.5]
 # qdot = [2.2, 1.0]
 # tau = [-1.1, 0.]
-h = 0.05  # large step, large error
+h = 0.01  # large step, large error
 q_next1, qdot_next1 = calc_rk4_manual(q, qdot, tau, h, cont_forward_dynamics)
 q_next2, qdot_next2 = calc_rk4(q, qdot, tau, h, forward_dynamics)
 
-println(norm(q_next1 - q_next2, Inf))
-println(norm(qdot_next1 - qdot_next2, Inf))
+# println(norm(q_next1 - q_next2, Inf))
+# println(norm(qdot_next1 - qdot_next2, Inf))
 
-J1, J2, J3, J4, J5, J6 = calc_rk4_derivatives(q, qdot, tau, h, forward_derivatives);
-println(norm(J1 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[1], q), Inf))
-println(norm(J2 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[1], qdot), Inf))
-println(norm(J3 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[1], tau), Inf))
-println(norm(J4 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[2], q), Inf))
-println(norm(J5 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[2], qdot), Inf))
-println(norm(J6 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[2], tau), Inf))
+# J1, J2, J3, J4, J5, J6 = calc_rk4_derivatives(q, qdot, tau, h, forward_derivatives);
+# println(norm(J1 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[1], q), Inf))
+# println(norm(J2 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[1], qdot), Inf))
+# println(norm(J3 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[1], tau), Inf))
+# println(norm(J4 - FD.finite_difference_jacobian(x_ -> calc_rk4(x_, qdot, tau, h, forward_dynamics)[2], q), Inf))
+# println(norm(J5 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, x_, tau, h, forward_dynamics)[2], qdot), Inf))
+# println(norm(J6 - FD.finite_difference_jacobian(x_ -> calc_rk4(q, qdot, x_, h, forward_dynamics)[2], tau), Inf))
 
 # @show @btime calc_rk4_manual($q, $qdot, $tau, $h, $cont_forward_dynamics);
 # @show @btime calc_rk4($q, $qdot, $tau, $h, $forward_dynamics);
@@ -94,8 +97,8 @@ display(q_next2)
 display(qdot_next2)
 # display(J1)
 # display(J2)
-display(J3)
+# display(J3)
 # display(J4)
 # display(J5)
-display(J6)
+# display(J6)
 
