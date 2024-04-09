@@ -81,12 +81,12 @@ let
     nx = nq * 2
     nu = 1
     dt = 0.05
-    tf = 1.0
+    tf = 5.0
     t_vec = 0:dt:tf
     N = length(t_vec)
 
-    x0 = [0, 0.2, 0.2, 0.0]
-    xg = [0, 0, 0, 0.0]
+    x0 = [0, 0.1, 0.1, 0.0]
+    xg = [0, 0., 0, 0.0]
     # x0 = [0, π, 0, 0.0, 0, 0]
     # xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
@@ -94,10 +94,10 @@ let
     Q = 1e1 * Diagonal([1, 10, 1, 1.0])
     # Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
     R = 1e-1 * Diagonal([1.0])
-    Qf = 100 * Q
+    Qf = 10 * Q
 
-    u_min = -5 * ones(nu)
-    u_max = 5 * ones(nu)
+    u_min = -5. * ones(nu)
+    u_max = 5. * ones(nu)
 
     # state is x y v θ
     x_min = -200 * ones(nx)
