@@ -136,9 +136,9 @@ function solve_cartpole_swingup(verbose=true)
 
     # LQR cost
     # Q = collect(Diagonal([500; 40; 30; 100]))
-    Q = 10 * diagm(ones(nx))
+    Q = 0 * diagm(ones(nx))
     R = 1.0 * diagm(ones(nu))
-    Qe = 0.0
+    Qe = 10.0
     Qf = 10 * Q
     display(Qe)
 
@@ -154,8 +154,8 @@ function solve_cartpole_swingup(verbose=true)
     xic[2] = rand() * 2pi           # angle from 0 to 2pi
     xic[3] = rand() * 2pi           # angle from 0 to 2pi
     xic[4]= (2*rand() - 1) * 0.5    # cart velocity from -2 to 2m/s
-    xic[5] = (2*rand() - 1) * pi   # angle velocity from -2pi to 2pi rad/s
-    xic[6] = (2*rand() - 1) * pi   # angle velocity from -2pi to 2pi rad/s
+    xic[5] = (2*rand() - 1) * 1.0   # angle velocity from -2pi to 2pi rad/s
+    xic[6] = (2*rand() - 1) * 1.0   # angle velocity from -2pi to 2pi rad/s
     display(xic)
     xg = [0, 0, 0, 0, 0, 0.0]
 
@@ -166,8 +166,8 @@ function solve_cartpole_swingup(verbose=true)
     x_l = -Inf * ones(idx.nz)
     x_u = Inf * ones(idx.nz)
     for i = 1:(N-1)
-        x_l[idx.u[i]] .= -200.0*ones(nu)
-        x_u[idx.u[i]] .= 200.0*ones(nu)
+        x_l[idx.u[i]] .= -500.0*ones(nu)
+        x_u[idx.u[i]] .= 500.0*ones(nu)
     end
 
     # inequality constraint bounds (this is what we do when we have no inequality constraints)
