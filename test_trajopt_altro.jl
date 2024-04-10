@@ -73,31 +73,31 @@ end
 
 # here is the script to run trajopt
 let
-    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole1l-v2/")
+    CARTPOLE_PATH = joinpath(@__DIR__, "cartpole2l/")
     lib = dlopen(joinpath(CARTPOLE_PATH, "build/libdynamics.so"))
     forward_dynamics = dlsym(lib, :forward_dynamics)
     forward_derivatives = dlsym(lib, :forward_derivatives)
-    nq = 2
+    nq = 3
     nx = nq * 2
     nu = 1
-    dt = 0.05
-    tf = 5.0
+    dt = 0.03
+    tf = 6.0
     t_vec = 0:dt:tf
-    N = length(t_vec)
+    N = length(t_vec)-1
 
-    x0 = [0, 0.1, 0.1, 0.0]
-    xg = [0, 0., 0, 0.0]
-    # x0 = [0, π, 0, 0.0, 0, 0]
-    # xg = [0, 0, 0, 0, 0, 0.0]
+    # x0 = [0, 0.1, 0.1, 0.0]
+    # xg = [0, 0., 0, 0.0]
+    x0 = [0, π, 0, 0.0, 0, 0]
+    xg = [0, 0, 0, 0, 0, 0.0]
     Xref = [deepcopy(xg) for i = 1:N]
     Uref = [zeros(nu) for i = 1:N-1]
-    Q = 1e1 * Diagonal([1, 10, 1, 1.0])
-    # Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
+    # Q = 1e1 * Diagonal([1, 10, 1, 1.0])
+    Q = 1e1 * Diagonal([1, 10, 10, 1, 1, 1.0])
     R = 1e-1 * Diagonal([1.0])
     Qf = 10 * Q
 
-    u_min = -5. * ones(nu)
-    u_max = 5. * ones(nu)
+    u_min = -100. * ones(nu)
+    u_max = 100. * ones(nu)
 
     # state is x y v θ
     x_min = -200 * ones(nx)
@@ -146,7 +146,7 @@ let
     # display(norm(B-B1)/norm(B))
 
     X = [deepcopy(x0) for i = 1:N]
-    U = [0.01 * randn(nu) for i = 1:N-1]
+    U = [1 * randn(nu) for i = 1:N-1]
     # for i = 1:Int(N/2)
     #     U[i] .= u_min
     #     U[Int(N/2)-1+i] .= u_max
@@ -155,26 +155,32 @@ let
     Xn = deepcopy(X)
     Un = deepcopy(U)
 
+    file = load("traj.jld2")["single_stored_object"]
+    X = file[1]
+    U = file[2]
+    Xn[1] .= X[1]
 
     P = [zeros(nx, nx) for i = 1:N]   # cost to go quadratic term
     p = [zeros(nx) for i = 1:N]      # cost to go linear term
     d = [zeros(nu) for i = 1:N-1]    # feedforward control
     K = [zeros(nu, nx) for i = 1:N-1] # feedback gain
-    Xhist = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-2, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
+    success = iLQR(params, X, U, P, p, K, d, Xn, Un; atol=1e-2, max_iters=2000, verbose=true, ρ=1e0, ϕ=10.0)
 
+    # S = 0.0
     # for i = 1:N-1
-    #     X[i+1] = discrete_dynamics(params, X[i], Un[i], i)
-    #     println(X[i])
+    #     Xn[i+1] = discrete_dynamics(params, Xn[i], U[i], i)
+    #     S+=(norm(X[i] - Xn[i]))
     #     # println(Un[i])
     # end
-    display(Xn)
-    display(Un)
+    # print(S)
+    # display(Xn)
+    # display(Un)
     
-    # traj = (Xn, Un)
-    # save_object("traj.jld2", traj)
+    traj = (Xn, Un)
+    save_object("traj.jld2", traj)
     
-    # np = pyimport("numpy")
-    # X_np = np.asarray(X)
-    # U_np = np.asarray(U)
-    # np.savez("traj", X_np=X_np, U_np=U_np)
+    np = pyimport("numpy")
+    X_np = np.asarray(Xn)
+    U_np = np.asarray(Un)
+    np.savez("traj", X_np=X_np, U_np=U_np)
 end

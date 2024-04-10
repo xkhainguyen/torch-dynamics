@@ -160,7 +160,7 @@ end
 function update_reg(reg,reg_min,reg_max,α)
     if α == 0.0
         if reg == reg_max
-            error("reached max reg")
+            @warn "reached max reg"
         end
         return min(reg_max,reg*10)
     end
@@ -265,12 +265,12 @@ function iLQR(params,X,U,P,p,K,d,Xn,Un;atol=1e-3,max_iters = 250,verbose = true,
             @show convio
             if convio <1e-4
                 @info "success!"
-                return Xhist[1:(iter + 1)]
+                return 1
             end
 
             ρ *= ϕ
         end
     end
-    error("iLQR failed")
+    return 0
 end
 #----------------------ALTRO DONE --------------------------
