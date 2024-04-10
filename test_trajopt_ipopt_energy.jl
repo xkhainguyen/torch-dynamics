@@ -15,6 +15,8 @@ using Libdl
 include(joinpath(@__DIR__, "utils", "fmincon.jl"))
 
 ##
+mc = 10; mp1 = 1; mp2 = 1; l1 = 1; l2 = 1; g = 9.81
+##
 
 function dynamics(p::NamedTuple, x, u)
     nq = Int(p.nx / 2)
@@ -43,9 +45,6 @@ function create_idx(nx, nu, N)
     # x_i = Z[idx.x[i]]
     # u_i = Z[idx.u[i]]
 
-    # Feel free to use/not use anything here.
-
-
     # our Z vector is [x0, u0, x1, u1, …, xN]
     nz = (N - 1) * nu + N * nx # length of Z 
     x = [(i - 1) * (nx + nu) .+ (1:nx) for i = 1:N]
@@ -68,11 +67,24 @@ function cartpole_cost(params::NamedTuple, Z::Vector)::Real
         ui = Z[idx.u[i]]
 
         J += 0.5 * (xi - xg)' * Q * (xi - xg)
-        J += 0.5 * ui' * R * ui
+
+        Ec = 0.5 * mc * xi[4]^2
+        Ep1 = 0.5 * mp1 * (l1 * xi[5])^2 + 0.5 * mp1 * g * l1 * cos(xi[2])
+        Ep2 = 0.5 * mp2 * (l2 * (xi[5] + xi[6]))^2 + 0.5 * mp2 * g * (l1 * cos(xi[2]) + l2 * cos(xi[2] + xi[3]))
+        Ed = mp1 * g * l1 + mp2 * g * (l1 + l2)
+        J += params.Qe * (Ec + Ep1 + Ep2 - Ed)^2
+
+        J += 0.5 * ui' * R * ui 
     end
 
     xn = Z[idx.x[N]]
     J += 0.5 * (xn - xg)' * Qf * (xn - xg)
+
+    Ec = 0.5 * mc * xn[4]^2
+    Ep1 = 0.5 * mp1 * (l1 * xn[5])^2 + 0.5 * mp1 * g * l1 * cos(xn[2])
+    Ep2 = 0.5 * mp2 * (l2 * (xn[5] + xn[6]))^2 + 0.5 * mp2 * g * (l1 * cos(xn[2]) + l2 * cos(xn[2] + xn[3]))
+    Ed = mp1 * g * l1 + mp2 * g * (l1 + l2)
+    J += 10 * params.Qe * (Ec + Ep1 + Ep2 - Ed)^2
 
     return J
 end
@@ -98,6 +110,12 @@ function cartpole_equality_constraint(params::NamedTuple, Z::Vector)::Vector
     [
         Z[idx.x[1]] - xic;
         Z[idx.x[N]] - xg;
+        # Z[idx.x[N]][1] - 0.0;
+        # cos(Z[idx.x[N]][2]) - 1.0;
+        # cos(Z[idx.x[N]][3]) - 1.0;
+        # Z[idx.x[N]][4] - 0.0;
+        # Z[idx.x[N]][5] - 0.0;
+        # Z[idx.x[N]][6] - 0.0;
         cartpole_dynamics_constraints(params, Z)
     ]
 end
@@ -112,15 +130,17 @@ function solve_cartpole_swingup(verbose=true)
     nx = nq * 2
     nu = 1
     dt = 0.03
-    tf = 5.0
+    tf = 7.0
     t_vec = 0:dt:tf
     N = length(t_vec)
 
     # LQR cost
     # Q = collect(Diagonal([500; 40; 30; 100]))
     Q = 10 * diagm(ones(nx))
-    R = 1 * diagm(ones(nu))
+    R = 1.0 * diagm(ones(nu))
+    Qe = 0.0
     Qf = 10 * Q
+    display(Qe)
 
     # indexing 
     idx = create_idx(nx, nu, N)
@@ -128,18 +148,26 @@ function solve_cartpole_swingup(verbose=true)
     # initial and goal states
     # xic = [0, pi, 0.2, 0.0]
     # xg = [0, 0, 0, 0.0]
-    xic = [0, π, 0, 0.0, 0, 0]
+    xic = [0, π, 0.5, 0.4, 0.4, -0.4]
+    Random.seed!(1234)
+    xic[1] = (2*rand() - 1) * 0.5     # cart from 2 to 2m
+    xic[2] = rand() * 2pi           # angle from 0 to 2pi
+    xic[3] = rand() * 2pi           # angle from 0 to 2pi
+    xic[4]= (2*rand() - 1) * 0.5    # cart velocity from -2 to 2m/s
+    xic[5] = (2*rand() - 1) * pi   # angle velocity from -2pi to 2pi rad/s
+    xic[6] = (2*rand() - 1) * pi   # angle velocity from -2pi to 2pi rad/s
+    display(xic)
     xg = [0, 0, 0, 0, 0, 0.0]
 
     # load all useful things into params 
-    params = (Q=Q, R=R, Qf=Qf, xic=xic, xg=xg, dt=dt, nx=nx, nu=nu, N=N, idx=idx, cont_forward_dynamics=cont_forward_dynamics)
+    params = (Q=Q, R=R, Qf=Qf, Qe=Qe, xic=xic, xg=xg, dt=dt, nx=nx, nu=nu, N=N, idx=idx, cont_forward_dynamics=cont_forward_dynamics)
 
     # primal bounds 
     x_l = -Inf * ones(idx.nz)
     x_u = Inf * ones(idx.nz)
     for i = 1:(N-1)
-        x_l[idx.u[i]] .= -100.0*ones(nu)
-        x_u[idx.u[i]] .= 100.0*ones(nu)
+        x_l[idx.u[i]] .= -200.0*ones(nu)
+        x_u[idx.u[i]] .= 200.0*ones(nu)
     end
 
     # inequality constraint bounds (this is what we do when we have no inequality constraints)
@@ -167,7 +195,7 @@ function solve_cartpole_swingup(verbose=true)
 
     Z = fmincon(cartpole_cost, cartpole_equality_constraint, inequality_constraint,
         x_l, x_u, c_l, c_u, z0, params, diff_type;
-        tol=1e-5, c_tol=1e-5, max_iters=10_000, verbose=verbose)
+        tol=1e1, c_tol=1e-1, max_iters=100, verbose=verbose)
 
     # pull the X and U solutions out of Z
     X = [Z[idx.x[i]] for i = 1:N]
